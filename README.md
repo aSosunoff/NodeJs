@@ -1,6 +1,6 @@
 # Node.Js
 
-<div style="text-align: center;">
+<div align="center">
 
 ![](nodejs.png) 
 
