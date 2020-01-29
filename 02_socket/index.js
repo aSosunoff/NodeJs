@@ -13,7 +13,9 @@ app.get('/', (req, res) => {
 socketServer.on('connection', (socket) => {
 	console.log('Client connection received');
 
-	socket.emit('sendToClient', {hello: 'world'});
+	socket.emit('sendToClient', {
+		message: 'Привет клиент'
+	});
 
 	socket.on('receivedFromClient', (data) => {
 		console.log(data);

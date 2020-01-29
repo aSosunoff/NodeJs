@@ -7,16 +7,21 @@
 	<title>Socket.IO</title>
 </head>
 <body>
-	<div class="">doc</div>
+	<div id="message"></div>
+	<button id="say">Сказать привет серверу</button>
 
 	<script src='/socket.io/socket.io.js'></script>
 	<script>
 		let socket = io();
 
 		socket.on('sendToClient', (data) => {
-			console.log(data);
+			let message = document.getElementById('message');
+			message.innerText = data.message;
+		});
 
-			socket.emit('receivedFromClient', {my: 'data'});
+		let say = document.getElementById('say');
+		say.addEventListener('click', function(e){
+			socket.emit('receivedFromClient', 'Привет сервер');
 		});
 	</script>
 </body>
