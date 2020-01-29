@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attach",
+            "name": "Attach by Process ID",
             "port": 3000,
             // "skipFiles": [
             //     "<node_internals>/**"
@@ -21,7 +21,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\demo\\fs.js"
+            "program": "${workspaceFolder}\\01_star\\demo\\fs.js"
         }
     ]
 }
