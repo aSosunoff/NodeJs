@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Socket.IO</title>
+</head>
+<body>
+	<div id="message"></div>
+	<button id="say">Сказать привет серверу</button>
+	<button id="say_to_server_2">Отправить</button>
+
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src='/socket.io/socket.io.js'></script>
+	<script>
+		let socket = io();
+
+		socket.on('sendToClient', (data) => {
+			let message = document.getElementById('message');
+			message.innerText = data.message;
+		});
+
+		let say = document.getElementById('say');
+		say.addEventListener('click', function(e){
+			socket.emit('receivedFromClient', 'Привет сервер');
+		});
+
+		let say_to_server_2 = document.getElementById('say_to_server_2');
+		say_to_server_2.addEventListener('click', function(e){
+			axios.get('/query')
+			.then(res => {
+				console.log(res);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+		});
+	</script>
+</body>
+</html>
