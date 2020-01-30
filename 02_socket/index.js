@@ -1,6 +1,8 @@
 const express = require('express');
 const http = require('http');
 const io = require('socket.io');
+// https://socket.io/docs/
+// https://www.codershood.info/2016/01/24/sending-message-specific-user-socket-io/
 
 const app = express();
 const server = new http.Server(app);
@@ -11,7 +13,7 @@ app.get('/', (req, res) => {
 });
 
 socketServer.on('connection', (socket) => {
-	console.log('Client connection received');
+	console.log(`Client connection received ${socket.id}`);
 
 	socket.emit('sendToClient', {
 		message: 'Привет клиент'
