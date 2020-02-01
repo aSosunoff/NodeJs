@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Введите данные</h1>
+    <form name='formData'>
+        <div>
+            <label for="name">Имя</label>
+            <input type="text" name="name" />
+        </div>
+        <div>
+            <label for="age">Возраст</label>
+            <input type="text" name="age" />
+        </div>
+        <input type="submit" id="submit" value="Отправить">
+    </form>
+
+    <script>
+        document.getElementById('submit').addEventListener('click', function(e){
+            e.preventDefault();
+            
+            let form = document.forms['formData'];
+            let formObj = Array
+                .from(new FormData(form))
+                    .reduce((r, c) => { 
+                        r[c[0]] = c[1]; 
+                        return r; 
+                    }, {});
+
+            let request = new XMLHttpRequest();
+            request.open('POST', '/data', true);
+            request.setRequestHeader('Content-Type', 'application/json');
+            request.addEventListener('load', function(){
+                let received = JSON.parse(request.response);
+                console.log(received);
+            });
+            request.send(JSON.stringify(formObj));
+        });
+    </script>
+</body>
+</html>
