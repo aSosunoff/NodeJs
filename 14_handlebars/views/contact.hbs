@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/">на главную</a>
+    <h1>Контакты</h1>
+    <p>Электронный адрес: {{mainEmail}}</p>
+    
+    {{#if otherEmail.length}}
+        <ul>
+            {{#each otherEmail as |element|}}
+                <li>{{element}}</li>
+            {{/each}}
+        </ul>
+    {{/if}}
+</body>
+</html>

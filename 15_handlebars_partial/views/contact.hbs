@@ -1,0 +1,9 @@
+<p>Электронный адрес: {{mainEmail}}</p>
+    
+{{#if otherEmail.length}}
+    <ul>
+        {{#each otherEmail as |element|}}
+            <li>{{element}}</li>
+        {{/each}}
+    </ul>
+{{/if}}
