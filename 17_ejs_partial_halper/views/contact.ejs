@@ -1,0 +1,13 @@
+<p>Электронный адрес: <%= mainEmail %></p>
+    
+<%- getList(otherEmail) %>
+
+<% if(otherEmail.length) {%>
+    <ul>
+        <% for(var i=0; i<otherEmail.length;i++) {%>
+            <li><%=otherEmail[i] %></li>
+        <%} %>
+    </ul>
+<% }else {%>
+    <h3>Электронный адрес отсутствует</h3>
+<%} %>
