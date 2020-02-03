@@ -1,19 +1,7 @@
 const express = require('express');
 const expressEjsLayout = require('express-ejs-layouts');
-//const expressHbs = require("express-handlebars");
-//const hbs = require("hbs");
 
 const server = express();
-
-// const exphbs = expressHbs.create({
-//     layoutsDir: "views/layouts", 
-//     defaultLayout: "master",
-//     extname: "hbs",
-//     helpers: {
-
-//     }
-// });
-
 
 server
     .use(express.static('css'))
