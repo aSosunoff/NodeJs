@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Список пользователей</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <form id="userForm">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" class="form-control" id="name">
+                        <small class="form-text text-muted">необходимо ввести имя пользователя</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Возраст</label>
+                        <input type="number" class="form-control" id="age">
+                        <small class="form-text text-muted">необходимо ввести возраст пользователя</small>
+                    </div>
+                    <button id="btnReset" class="btn btn-primary">Сбросить</button>
+                    <button id="btnSave" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <table class="table table-dark table-bordered table-hover">
+                    <thead>
+                        <tr> 
+                            <th scope="col">№</th><th scope="col">Имя</th><th scope="col">Возраст</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script>
+        const instance = axios.create({
+            baseURL: '/api/',
+            timeout: 1000,
+            // headers: {'X-Custom-Header': 'foobar'}
+        });
+
+        function GetRow(element){
+            return `<tr data-rowid='${element.id}'>
+                        <th scope="row">${element.id}</th>
+                        <td>${element.name}</td>
+                        <td>${element.age}</td>
+                        <td><a href="#" class='editLink' data-id='${element.id}'>Изменить</a> | <a href="#" class='removeLink' data-id='${element.id}'>Удалить</a></td>
+                    </tr>`;
+        }
+
+        function GetUsers() {
+            instance.get('users').then(res => {
+                for(let [key, element] of res.data.entries()){
+                    let row = GetRow(element);
+                    $("table tbody").append(row);
+                }
+            });
+        }
+
+        function GetUser(id, callback) {
+            instance.get(`user/${id}`).then(res => {
+                callback(res.data);
+            });
+        }
+
+        function Reset() {
+            let form = $('#userForm')[0];
+            form.reset();
+            $(form.id).val(0);
+        }
+
+        function CreateUser(user) {
+            instance.post('user', user).then(res => {
+                $("table tbody").append(GetRow(res.data));
+            });
+        }
+
+        function EditUser(user) {
+            instance.put('user', user).then(res => {
+                Reset();
+                $("tr[data-rowid='" + res.data.id + "']").replaceWith(GetRow(res.data));
+            });
+        }
+
+        function DeleteUser(id) {
+            instance.delete(`user/${id}`).then(res => {
+                $("tr[data-rowid='" + res.data.id + "']").remove();
+            });
+        }
+        
+        $(() => {
+            Reset();
+            GetUsers();
+
+            $("#btnReset").click(function(e){
+                e.preventDefault();
+                Reset();
+            });
+
+            $("body").on("click", ".editLink", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                GetUser(id, (user) => {
+                    let form = $('#userForm')[0];
+                    $(form.id).val(user.id);
+                    $(form.age).val(user.age);
+                    $(form.name).val(user.name);
+                });
+            });
+
+            $("#btnSave").click(function(e){
+                e.preventDefault();
+                let form = $('#userForm')[0];
+                if(Number($(form.id).val()) == 0){
+                    CreateUser({
+                        age: $(form.age).val(),
+                        name: $(form.name).val(),
+                    });
+                } else {
+                    EditUser({
+                        id: $(form.id).val(),
+                        age: $(form.age).val(),
+                        name: $(form.name).val(),
+                    });
+                }
+            });
+
+            $("body").on("click", ".removeLink", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                DeleteUser(id);
+            });
+        });
+    </script>
+</body>
+</html>
