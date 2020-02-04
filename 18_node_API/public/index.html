@@ -53,6 +53,7 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
+    <script src="message.js"></script>
     <script>
         const instance = axios.create({
             baseURL: '/api/',
@@ -62,34 +63,53 @@
 
         class User {
             static GetUsers(callback) {
-                instance.get('users').then(res => {
-                    for(let element of res.data)
-                        callback(element);
-                });
+                instance.get('users')
+                    .then(res => {
+                        callback(null, res.data);    
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
             }
 
             static GetUser(id, callback) {
-                instance.get(`user/${id}`).then(res => {
-                    callback(res.data);
-                });
+                instance.get(`user/${id}`)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
             }
 
             static DeleteUser(id, callback) {
-                instance.delete(`user/${id}`).then(res => {
-                    callback(res.data);
-                });
+                instance.delete(`user/${id}`)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
             }
 
             static CreateUser(user, callback) {
-                instance.post('user', user).then(res => {
-                    callback(res.data);
-                });
+                instance.post('user', user)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
             }
 
             static EditUser(user, callback) {
-                instance.put('user', user).then(res => {
-                    callback(res.data);
-                });
+                instance.put('user', user)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
             }
         }
 
@@ -110,10 +130,17 @@
 
         $(() => {
             Reset();
-            
-            User.GetUsers(element => {
-                let row = GetRow(element);
-                $("table tbody").append(row);
+
+            User.GetUsers((err, users) => {
+                if(err){
+                    Message.danger('Произошла ошибка получения пользователей');
+                    console.log(err);
+                } else {
+                    for(let user of users){
+                        let row = GetRow(user);
+                        $("table tbody").append(row);
+                    }
+                }
             });
 
             $("#btnReset").click(function(e){
@@ -124,11 +151,16 @@
             $("body").on("click", ".editLink", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
-                User.GetUser(id, (user) => {
-                    let form = $('#userForm')[0];
-                    $(form.id).val(user.id);
-                    $(form.age).val(user.age);
-                    $(form.name).val(user.name);
+                User.GetUser(id, (err, user) => {
+                    if(err){
+                        Message.danger('Произошла ошибка получения пользователя');
+                        console.log(err);
+                    } else {
+                        let form = $('#userForm')[0];
+                        $(form.id).val(user.id);
+                        $(form.age).val(user.age);
+                        $(form.name).val(user.name);
+                    }
                 });
             });
 
@@ -139,17 +171,27 @@
                     User.CreateUser({
                         age: $(form.age).val(),
                         name: $(form.name).val(),
-                    }, user => {
-                        $("table tbody").append(GetRow(user));
+                    }, (err, user) => {
+                        if(err){
+                            Message.danger('Произошла ошибка при создании');
+                            console.log(err);
+                        } else {
+                            $("table tbody").append(GetRow(user));
+                        }
                     });
                 } else {
                     User.EditUser({
                         id: $(form.id).val(),
                         age: $(form.age).val(),
                         name: $(form.name).val(),
-                    }, user => {
-                        Reset();
-                        $("tr[data-rowid='" + user.id + "']").replaceWith(GetRow(user));
+                    }, (err, user) => {
+                        if(err){
+                            Message.danger('Произошла ошибка при изменении данных пользователя');
+                            console.log(err);
+                        } else {
+                            Reset();
+                            $("tr[data-rowid='" + user.id + "']").replaceWith(GetRow(user));
+                        }
                     });
                 }
             });
@@ -157,8 +199,13 @@
             $("body").on("click", ".removeLink", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
-                User.DeleteUser(id, user => {
-                    $("tr[data-rowid='" + user.id + "']").remove();
+                User.DeleteUser(id, (err, user) => {
+                    if(err){
+                        Message.danger('Произошла ошибка при удалении');
+                        console.log(err);
+                    } else {
+                        $("tr[data-rowid='" + user.id + "']").remove();
+                    }
                 });
             });
         });
