@@ -60,6 +60,39 @@
             // headers: {'X-Custom-Header': 'foobar'}
         });
 
+        class User {
+            static GetUsers(callback) {
+                instance.get('users').then(res => {
+                    for(let element of res.data)
+                        callback(element);
+                });
+            }
+
+            static GetUser(id, callback) {
+                instance.get(`user/${id}`).then(res => {
+                    callback(res.data);
+                });
+            }
+
+            static DeleteUser(id, callback) {
+                instance.delete(`user/${id}`).then(res => {
+                    callback(res.data);
+                });
+            }
+
+            static CreateUser(user, callback) {
+                instance.post('user', user).then(res => {
+                    callback(res.data);
+                });
+            }
+
+            static EditUser(user, callback) {
+                instance.put('user', user).then(res => {
+                    callback(res.data);
+                });
+            }
+        }
+
         function GetRow(element){
             return `<tr data-rowid='${element.id}'>
                         <th scope="row">${element.id}</th>
@@ -69,49 +102,19 @@
                     </tr>`;
         }
 
-        function GetUsers() {
-            instance.get('users').then(res => {
-                for(let [key, element] of res.data.entries()){
-                    let row = GetRow(element);
-                    $("table tbody").append(row);
-                }
-            });
-        }
-
-        function GetUser(id, callback) {
-            instance.get(`user/${id}`).then(res => {
-                callback(res.data);
-            });
-        }
-
         function Reset() {
             let form = $('#userForm')[0];
             form.reset();
             $(form.id).val(0);
         }
 
-        function CreateUser(user) {
-            instance.post('user', user).then(res => {
-                $("table tbody").append(GetRow(res.data));
-            });
-        }
-
-        function EditUser(user) {
-            instance.put('user', user).then(res => {
-                Reset();
-                $("tr[data-rowid='" + res.data.id + "']").replaceWith(GetRow(res.data));
-            });
-        }
-
-        function DeleteUser(id) {
-            instance.delete(`user/${id}`).then(res => {
-                $("tr[data-rowid='" + res.data.id + "']").remove();
-            });
-        }
-        
         $(() => {
             Reset();
-            GetUsers();
+            
+            User.GetUsers(element => {
+                let row = GetRow(element);
+                $("table tbody").append(row);
+            });
 
             $("#btnReset").click(function(e){
                 e.preventDefault();
@@ -121,7 +124,7 @@
             $("body").on("click", ".editLink", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
-                GetUser(id, (user) => {
+                User.GetUser(id, (user) => {
                     let form = $('#userForm')[0];
                     $(form.id).val(user.id);
                     $(form.age).val(user.age);
@@ -133,15 +136,20 @@
                 e.preventDefault();
                 let form = $('#userForm')[0];
                 if(Number($(form.id).val()) == 0){
-                    CreateUser({
+                    User.CreateUser({
                         age: $(form.age).val(),
                         name: $(form.name).val(),
+                    }, user => {
+                        $("table tbody").append(GetRow(user));
                     });
                 } else {
-                    EditUser({
+                    User.EditUser({
                         id: $(form.id).val(),
                         age: $(form.age).val(),
                         name: $(form.name).val(),
+                    }, user => {
+                        Reset();
+                        $("tr[data-rowid='" + user.id + "']").replaceWith(GetRow(user));
                     });
                 }
             });
@@ -149,7 +157,9 @@
             $("body").on("click", ".removeLink", function (e) {
                 e.preventDefault();
                 var id = $(this).data("id");
-                DeleteUser(id);
+                User.DeleteUser(id, user => {
+                    $("tr[data-rowid='" + user.id + "']").remove();
+                });
             });
         });
     </script>
