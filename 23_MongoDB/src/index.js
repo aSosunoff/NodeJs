@@ -13,6 +13,7 @@ let users = [
     {name: 'Harry', age: 55},
     {name: 'Guidy', age: 55},
     {name: 'Peppi', age: 55},
+    {name: 'Lina_2', age: 32},
 ];
 
 const log = (text, result) => {
@@ -47,93 +48,124 @@ class Collection{
         });
     }
 
-    insertOne(resolve, reject){
-        this.collection.insertOne(user, (err, result) => {
-            if(err)
-                reject(err);
-
-            log('вставка одного пользователь', result.ops);
-
-            resolve();
-        });
-    }
-
-    insertMany(resolve, reject){
-        this.collection.insertMany(users, (err, result) => {
-            if(err)
-                reject(err);
-            
-            log('вставка массива пользователей', result.ops);
-            
-            resolve();
-        });
-    }
-
-    find(resolve, reject){
-        this.collection.find().toArray((err, result) => {
-            if(err)
-                reject(err);
-
-            log('чтение всех документов в коллекции', result);
-            
-            resolve();
-        });
-    }
-
-    findFilter(resolve, reject){
-        this.collection.find({name: 'Alex'}).toArray((err, result) => {
-            if(err)
-                reject(err);
+    insertOne(result){
+        return getPromise((resolve, reject) => {
+            this.collection.insertOne(user, (err, result) => {
+                if(err)
+                    reject(err);
     
-                log('чтение всех документов где имя пользователя Alex', result);
-            
-            resolve();
+                log('вставка одного пользователь', result.ops);
+    
+                resolve();
+            });
         });
     }
 
-    findOne(resolve, reject){
-        this.collection.findOne((err, result) => {
-            if(err)
-                reject(err);
-            
-            log('чтение первого документа', result);
-            
-            resolve();
+    insertMany(result){
+        return getPromise((resolve, reject) => {
+            this.collection.insertMany(users, (err, result) => {
+                if(err)
+                    reject(err);
+                
+                log('вставка массива пользователей', result.ops);
+                
+                resolve();
+            });
         });
     }
 
-    deleteMany(resolve, reject){
-        this.collection.deleteMany({age: 25}, function(err, result){
-            if(err)
-                reject(err);
-            
-            log('Удаление всех пользователей кому есть 25', result.result);
-            
-            resolve();
+    find(result){
+        return getPromise((resolve, reject) => {
+            this.collection.find().toArray((err, result) => {
+                if(err)
+                    reject(err);
+    
+                log('чтение всех документов в коллекции', result);
+                
+                resolve();
+            });
         });
     }
 
-    deleteOne(resolve, reject){
-        this.collection.deleteOne({age: 55}, function(err, result){
-            if(err)
-                reject(err);
-            
-            log('Удаление одного пользователя кому 55', result.result);
-            
-            resolve();
+    findFilter(result){
+        return getPromise((resolve, reject) => {
+            this.collection.find({name: 'Alex'}).toArray((err, result) => {
+                if(err)
+                    reject(err);
+        
+                    log('чтение всех документов где имя пользователя Alex', result);
+                
+                resolve();
+            });
         });
     }
 
-    findOneAndDelete(resolve, reject){
-        this.collection.findOneAndDelete({age: 55}, function(err, result){
-            if(err)
-                reject(err);
-            
-            log('Удаление одного пользователя кому 55, но с возвратом того кого удалили', result.value);
-            
-            resolve();
+    findOne(result){
+        return getPromise((resolve, reject) => {
+            this.collection.findOne((err, result) => {
+                if(err)
+                    reject(err);
+                
+                log('чтение первого документа', result);
+                
+                resolve();
+            });
         });
     }
+
+    deleteMany(result){
+        return getPromise((resolve, reject) => {
+            this.collection.deleteMany({age: 25}, function(err, result){
+                if(err)
+                    reject(err);
+                
+                log('Удаление всех пользователей кому есть 25', result.result);
+                
+                resolve();
+            });
+        });
+    }
+
+    deleteOne(result){
+        return getPromise((resolve, reject) => {
+            this.collection.deleteOne({age: 55}, function(err, result){
+                if(err)
+                    reject(err);
+                
+                log('Удаление одного пользователя кому 55', result.result);
+                
+                resolve();
+            });
+        });
+    }
+
+    findOneAndDelete(result){
+        return getPromise((resolve, reject) => {
+            this.collection.findOneAndDelete({age: 55}, function(err, result){
+                if(err)
+                    reject(err);
+                
+                log('Удаление одного пользователя кому 55, но с возвратом того кого удалили', result.value);
+                
+                resolve();
+            });
+        });
+    }
+
+    updateOne(result){
+        return getPromise((resolve, reject) => {
+            this.collection.updateOne({age: 32}, {$set: {name: "NEW_NAME", age: 666}}, (err, result) => {
+                if(err)
+                    reject(err);
+
+                log('Изменение первого пользователя которому 32', result.result);
+        
+                resolve();
+            });
+        });
+    }
+
+    
 }
 
 mongoClient.connect(function(err, client){
@@ -146,48 +178,18 @@ mongoClient.connect(function(err, client){
     const usersCollection = new Collection(db, collection);
 
     getPromise((resolve, reject) => { usersCollection.drop(resolve, reject); })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.insertOne(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.insertMany(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.find(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.findFilter(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.findOne(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.deleteMany(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.deleteOne(resolve, reject);
-            });
-        })
-        .then(result => {
-            return getPromise((resolve, reject) => {
-                usersCollection.findOneAndDelete(resolve, reject);
-            });
-        })
+        .then(usersCollection.insertOne.bind(usersCollection))
+        .then(usersCollection.insertMany.bind(usersCollection))
+        .then(usersCollection.find.bind(usersCollection))
+        .then(usersCollection.findFilter.bind(usersCollection))
+        .then(usersCollection.findOne.bind(usersCollection))
+        .then(usersCollection.deleteMany.bind(usersCollection))
+        .then(usersCollection.deleteOne.bind(usersCollection))
+        .then(usersCollection.findOneAndDelete.bind(usersCollection))
+        .then(usersCollection.updateOne.bind(usersCollection))
         .catch(err => {
             console.log(err);
+            client.reject();
         })
         .finally(() => {
             client.close();
