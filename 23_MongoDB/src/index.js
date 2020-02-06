@@ -154,7 +154,7 @@ class Collection{
 
     updateOne(result){
         return getPromise((resolve, reject) => {
-            this.collection.updateOne({age: 32}, {$set: {name: "NEW_NAME", age: 666}}, (err, result) => {
+            this.collection.updateOne({age: 32}, {$set: {name: "NEW_NAME", age: 15}}, (err, result) => {
                 if(err)
                     reject(err);
 
@@ -165,7 +165,35 @@ class Collection{
         });
     }
 
-    
+    updateMany(result){
+        return getPromise((resolve, reject) => {
+            this.collection.updateMany({age: 15}, {$set: {name: "NEW_NAME_2", age: 1}}, (err, result) => {
+                if(err)
+                    reject(err);
+
+                log('Изменение всех пользователей которым по 15', result.result);
+        
+                resolve();
+            });
+        });
+    }
+
+    findOneAndUpdate(result){
+        return getPromise((resolve, reject) => {
+            this.collection.findOneAndUpdate(
+                {age: 1}, 
+                {$set: {name: "One_Update_NEW_NAME_2", age: 1}},
+                {returnOriginal: false},
+                (err, result) => {
+                    if(err)
+                        reject(err);
+
+                    log('Изменение первого пользователя которому 1 и везврат значения в записимости от опций', result.value);
+            
+                    resolve();
+                });
+        });
+    }
 }
 
 mongoClient.connect(function(err, client){
@@ -187,6 +215,8 @@ mongoClient.connect(function(err, client){
         .then(usersCollection.deleteOne.bind(usersCollection))
         .then(usersCollection.findOneAndDelete.bind(usersCollection))
         .then(usersCollection.updateOne.bind(usersCollection))
+        .then(usersCollection.updateMany.bind(usersCollection))
+        .then(usersCollection.findOneAndUpdate.bind(usersCollection))
         .catch(err => {
             console.log(err);
             client.reject();
