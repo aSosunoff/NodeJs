@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Список пользователей</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <form id="userForm">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" class="form-control" id="name">
+                        <small class="form-text text-muted">необходимо ввести имя пользователя</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Возраст</label>
+                        <input type="number" class="form-control" id="age">
+                        <small class="form-text text-muted">необходимо ввести возраст пользователя</small>
+                    </div>
+                    <button id="btnReset" class="btn btn-primary">Сбросить</button>
+                    <button id="btnSave" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <table class="table table-dark table-bordered table-hover">
+                    <thead>
+                        <tr> 
+                            <th scope="col">№</th><th scope="col">Имя</th><th scope="col">Возраст</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script src="script/message.js"></script>
+    <script src="script/common.js"></script>
+</body>
+</html>
