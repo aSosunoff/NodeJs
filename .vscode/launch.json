@@ -21,7 +21,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\23_MongoDB\\src\\index.js"
+            "program": "${workspaceFolder}\\24_node_API_MongoDB\\src\\index.js"
         }
     ]
 }

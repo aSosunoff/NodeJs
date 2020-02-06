@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Список пользователей</title>    
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <h2>Список пользователей</h2>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <form id="userForm">
+                    <input type="hidden" name="id">
+                    <div class="form-group">
+                        <label for="name">Имя</label>
+                        <input type="text" class="form-control" id="name">
+                        <small class="form-text text-muted">необходимо ввести имя пользователя</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Возраст</label>
+                        <input type="number" class="form-control" id="age">
+                        <small class="form-text text-muted">необходимо ввести возраст пользователя</small>
+                    </div>
+                    <button id="btnReset" class="btn btn-primary">Сбросить</button>
+                    <button id="btnSave" class="btn btn-primary">Сохранить</button>
+                </form>
+            </div>
+        </div>
+        
+        <hr>
+
+        <div class="row">
+            <div class="offset-3 col-6">
+                <table class="table table-dark table-bordered table-hover">
+                    <thead>
+                        <tr> 
+                            <th scope="col">№</th><th scope="col">Имя</th><th scope="col">Возраст</th><th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+    <script src="message.js"></script>
+    <script>
+        const instance = axios.create({
+            baseURL: '/api/',
+            timeout: 1000,
+            // headers: {'X-Custom-Header': 'foobar'}
+        });
+
+        class User {
+            static GetUsers(callback) {
+                instance.get('users')
+                    .then(res => {
+                        callback(null, res.data);    
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
+            }
+
+            static GetUser(id, callback) {
+                instance.get(`user/${id}`)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
+            }
+
+            static DeleteUser(id, callback) {
+                instance.delete(`user/${id}`)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
+            }
+
+            static CreateUser(user, callback) {
+                instance.post('user', user)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
+            }
+
+            static EditUser(user, callback) {
+                instance.put('user', user)
+                    .then(res => {
+                        callback(null, res.data);
+                    })
+                    .catch(err => {
+                        callback(err);
+                    });
+            }
+        }
+
+        function GetRow(element){
+            return `<tr data-rowid='${element.id}'>
+                        <th scope="row">${element.id}</th>
+                        <td>${element.name}</td>
+                        <td>${element.age}</td>
+                        <td><a href="#" class='editLink' data-id='${element.id}'>Изменить</a> | <a href="#" class='removeLink' data-id='${element.id}'>Удалить</a></td>
+                    </tr>`;
+        }
+
+        function Reset() {
+            let form = $('#userForm')[0];
+            form.reset();
+            $(form.id).val(0);
+        }
+
+        $(() => {
+            Reset();
+
+            User.GetUsers((err, users) => {
+                if(err){
+                    Message.danger('Произошла ошибка получения пользователей');
+                    console.log(err);
+                } else {
+                    for(let user of users){
+                        let row = GetRow(user);
+                        $("table tbody").append(row);
+                    }
+                }
+            });
+
+            $("#btnReset").click(function(e){
+                e.preventDefault();
+                Reset();
+            });
+
+            $("body").on("click", ".editLink", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                User.GetUser(id, (err, user) => {
+                    if(err){
+                        Message.danger('Произошла ошибка получения пользователя');
+                        console.log(err);
+                    } else {
+                        let form = $('#userForm')[0];
+                        $(form.id).val(user.id);
+                        $(form.age).val(user.age);
+                        $(form.name).val(user.name);
+                    }
+                });
+            });
+
+            $("#btnSave").click(function(e){
+                e.preventDefault();
+                let form = $('#userForm')[0];
+                if(Number($(form.id).val()) == 0){
+                    User.CreateUser({
+                        age: $(form.age).val(),
+                        name: $(form.name).val(),
+                    }, (err, user) => {
+                        if(err){
+                            Message.danger('Произошла ошибка при создании');
+                            console.log(err);
+                        } else {
+                            $("table tbody").append(GetRow(user));
+                        }
+                    });
+                } else {
+                    User.EditUser({
+                        id: $(form.id).val(),
+                        age: $(form.age).val(),
+                        name: $(form.name).val(),
+                    }, (err, user) => {
+                        if(err){
+                            Message.danger('Произошла ошибка при изменении данных пользователя');
+                            console.log(err);
+                        } else {
+                            Reset();
+                            $("tr[data-rowid='" + user.id + "']").replaceWith(GetRow(user));
+                        }
+                    });
+                }
+            });
+
+            $("body").on("click", ".removeLink", function (e) {
+                e.preventDefault();
+                var id = $(this).data("id");
+                User.DeleteUser(id, (err, user) => {
+                    if(err){
+                        Message.danger('Произошла ошибка при удалении');
+                        console.log(err);
+                    } else {
+                        $("tr[data-rowid='" + user.id + "']").remove();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
