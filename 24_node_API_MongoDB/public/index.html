@@ -113,13 +113,20 @@
             }
         }
 
-        function GetRow(element){
-            return `<tr data-rowid='${element.id}'>
-                        <th scope="row">${element.id}</th>
+        function GetRow(element, num){
+            let number = num || ++$("table tbody tr").length;
+            return `<tr data-rowid='${element._id}'>
+                        <th scope="row">${number}</th>
                         <td>${element.name}</td>
                         <td>${element.age}</td>
-                        <td><a href="#" class='editLink' data-id='${element.id}'>Изменить</a> | <a href="#" class='removeLink' data-id='${element.id}'>Удалить</a></td>
+                        <td><a href="#" class='editLink' data-id='${element._id}'>Изменить</a> | <a href="#" class='removeLink' data-id='${element._id}'>Удалить</a></td>
                     </tr>`;
+        }
+
+        function GetRowUpdate(element){
+            debugger;
+            let num = $("tr[data-rowid='" + element._id + "'] th[scope='row'").text();
+            return GetRow(element, num);
         }
 
         function Reset() {
@@ -157,7 +164,7 @@
                         console.log(err);
                     } else {
                         let form = $('#userForm')[0];
-                        $(form.id).val(user.id);
+                        $(form.id).val(user._id);
                         $(form.age).val(user.age);
                         $(form.name).val(user.name);
                     }
@@ -190,7 +197,7 @@
                             console.log(err);
                         } else {
                             Reset();
-                            $("tr[data-rowid='" + user.id + "']").replaceWith(GetRow(user));
+                            $("tr[data-rowid='" + user._id + "']").replaceWith(GetRowUpdate(user));
                         }
                     });
                 }
@@ -204,7 +211,7 @@
                         Message.danger('Произошла ошибка при удалении');
                         console.log(err);
                     } else {
-                        $("tr[data-rowid='" + user.id + "']").remove();
+                        $("tr[data-rowid='" + user._id + "']").remove();
                     }
                 });
             });
