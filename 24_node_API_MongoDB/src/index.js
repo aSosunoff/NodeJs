@@ -1,10 +1,7 @@
 const express = require('express');
-const fs = require('fs');
 const bodyParser = require('body-parser');
 const path = require('path');
 const {MongoClient, ObjectID} = require('mongodb');
-
-const promise = require('./getPromise');
 
 const server = express();
 const apiRouter = express.Router();
@@ -31,14 +28,19 @@ mongoClient.connect((err, client) => {
 });
 
 apiRouter.get('/users', (req, res) => {
-    req.app.locals.userCollection.find().toArray((err, users) => {
-        if(err) {
-            console.log(err);
-            return res.sendStatus(400);
-        }
-
-        res.send(users);
-    });
+    try {
+        req.app.locals.userCollection.find().toArray((err, users) => {
+            if(err) {
+                console.log(err);
+                return res.sendStatus(400);
+            }
+    
+            res.send(users);
+        });
+    } catch(err) {
+        console.log(err.message);
+        res.sendStatus(404);
+    }
 });
 
 apiRouter.get('/user/:id', (req, res) => {
@@ -60,21 +62,27 @@ apiRouter.get('/user/:id', (req, res) => {
 });
 
 apiRouter.post('/user', jsonParser, (req, res) => {
-    if(!req.body) return res.sendStatus(400);
+    try {
+        if(!req.body)
+            throw new Error('Parameter is not found');
 
-    let user = {
-        name: req.body.name, 
-        age: req.body.age
-    };
+        let user = {
+            name: req.body.name, 
+            age: req.body.age
+        };
 
-    req.app.locals.userCollection.insertOne(user, (err, result) => {
-        if(err) {
-            console.log(err);
-            return res.sendStatus(400);
-        }
+        req.app.locals.userCollection.insertOne(user, (err, result) => {
+            if(err) {
+                console.log(err);
+                return res.sendStatus(400);
+            }
 
-        res.send(user);
-    });
+            res.send(user);
+        });
+    } catch(err){
+        console.log(err.message);
+        res.sendStatus(404);
+    }    
 });
 
 apiRouter.delete("/user/:id", (req, res) => {
@@ -96,25 +104,31 @@ apiRouter.delete("/user/:id", (req, res) => {
 });
 
 apiRouter.put("/user", jsonParser, function(req, res){
-    if(!req.body) return res.sendStatus(400);
-     
-    let id = ObjectID(req.body.id);
-    
-    req.app.locals.userCollection.findOneAndUpdate(
-        {_id: id},
-        {$set: {
-            age: req.body.age,
-            name: req.body.name
-        }},
-        {returnOriginal: false},
-        (err, result) => {
-            if(err) {
-                console.log(err);
-                return res.sendStatus(400);
-            }
+    try {
+        if(!req.body)
+            throw new Error('Parameter is not found');
 
-            res.send(result.value);
-        });
+        let id = ObjectID(req.body.id);
+
+        req.app.locals.userCollection.findOneAndUpdate(
+            {_id: id},
+            {$set: {
+                age: req.body.age,
+                name: req.body.name
+            }},
+            {returnOriginal: false},
+            (err, result) => {
+                if(err) {
+                    console.log(err);
+                    return res.sendStatus(400);
+                }
+    
+                res.send(result.value);
+            });
+    } catch(err){
+        console.log(err.message);
+        res.sendStatus(404);
+    }   
 });
 
 server.use('/api', apiRouter);
