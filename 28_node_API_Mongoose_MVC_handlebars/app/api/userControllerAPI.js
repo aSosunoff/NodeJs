@@ -1,7 +1,7 @@
 const path = require('path');
 const UserModel = require('../models/userModel');
 
-module.exports.list = (req, res) => {
+exports.list = (req, res) => {
     try {
         UserModel.find((err, docs) => {
             if(err) {
@@ -17,7 +17,7 @@ module.exports.list = (req, res) => {
     }
 }
 
-module.exports.getUserById = (req, res) => {
+exports.getUserById = (req, res) => {
     try {
         let id = req.params['id'];
 
@@ -35,7 +35,7 @@ module.exports.getUserById = (req, res) => {
     }
 }
 
-module.exports.save = (req, res) => {
+exports.save = (req, res) => {
     try {
         if(!req.body)
             throw new Error('Parameter is not found');
@@ -58,7 +58,7 @@ module.exports.save = (req, res) => {
     }    
 };
 
-module.exports.delete = (req, res) => {
+exports.delete = (req, res) => {
     try {
         let id = req.params['id'];
 
@@ -76,7 +76,7 @@ module.exports.delete = (req, res) => {
     }
 };
 
-module.exports.update = (req, res) => {
+exports.update = (req, res) => {
     try {
         if(!req.body)
             throw new Error('Parameter is not found');
