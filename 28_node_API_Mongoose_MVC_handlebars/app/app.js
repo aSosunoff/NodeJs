@@ -19,36 +19,6 @@ const exphbs = expressHbs.create({
             this._sections[name] = options.fn(this); 
             return null;
         },
-        // getTime: () => {
-        //     var myDate = new Date();
-        //     var hour = myDate.getHours();
-        //     var minute = myDate.getMinutes();
-        //     var second = myDate.getSeconds();
-        
-        //     if (minute < 10) 
-        //         minute = "0" + minute;
-        
-        //     if (second < 10) 
-        //         second = "0" + second;
-        
-        //     return "Текущее время: " + hour + ":" + minute + ":" + second;
-        // },
-        // say: () => {
-        //     return 'Привет для всех шаблонов'
-        // },
-        // getList: (arr) => {
-        //     if(!arr.length) 
-        //         return '';
-                
-        //     let result = '<ul>';
-            
-        //     for(let value of arr)
-        //         result += `<li>${value}</li>`;
-
-        //     result += '</ul>';
-
-        //     return result;
-        // }
     }
 });
 hbs.registerPartials(path.resolve(__dirname, "views/partials"));
