@@ -21,7 +21,10 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\24_node_API_MongoDB\\src\\index.js"
+            "program": "${workspaceFolder}\\30_winston\\app.js",
+            // "env": {
+            //     "DEBUG": "TEST"
+            // }
         }
     ]
 }

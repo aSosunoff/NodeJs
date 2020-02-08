@@ -1,0 +1,20 @@
+{
+  "name": "30_winston",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dm": "SET DEBUG=module:main && node app.js",
+    "da": "SET DEBUG=module:add && node app.js",
+    "ds": "SET DEBUG=module:sub && node app.js",
+    "dall": "SET DEBUG=module:* && node app.js",
+    "dmm": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "winston": "^3.2.1"
+  },
+  "dependencies": {},
+  "description": ""
+}

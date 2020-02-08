@@ -1,0 +1,19 @@
+{
+  "name": "29_debug",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug_sub": "SET DEBUG=module:sub && node app.js",
+    "debug_add": "SET DEBUG=module:add && node app.js",
+    "debug_main": "SET DEBUG=module:main && node app.js",
+    "debug_all": "SET DEBUG=module:sub,module:add,module:main && node app.js",
+    "debug_all_2": "SET DEBUG=module:* && node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "debug": "^4.1.1"
+  }
+}
