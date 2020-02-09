@@ -4,15 +4,8 @@ const path = require('path');
 
 let ROOT = '';
 
-// module.exports = (...pathRoot) => {
-//     for(let i = 0; i < pathRoot.length; i++)
-//         ROOT.push(path.resolve(__dirname, `../${pathRoot[i]}`));
-
-//     return sendFileSafe;
-// }
-
 module.exports = (pathRoot) => {
-    ROOT = path.resolve(__dirname, `../${pathRoot}`)
+    ROOT = path.resolve(module.parent.path, `${pathRoot}`)
     return sendFileSafe;
 }
 
@@ -20,20 +13,12 @@ const sendFileSafe = (filePath, callback) => {
     try {
         filePath = decodeURIComponent(filePath);
     } catch (error) {
-        callback({
-            message: 'Не верный запрос',
-            code: 400,
-            error: error
-        });
+        callback(errorCallback(400, 'Не верный запрос', error));
         return;
     }
 
     if(~filePath.indexOf('\0')){
-        callback({
-            message: 'Не верный запрос',
-            code: 400,
-            error: null
-        });
+        callback(errorCallback(400, 'Не верный запрос', null));
         return;
     }
 
@@ -42,41 +27,40 @@ const sendFileSafe = (filePath, callback) => {
     filePath = path.normalize(path.join(ROOT, filePath));
     
     if(filePath.indexOf(ROOT) != 0){
-        callback({
-            message: 'Файл не найден',
-            code: 404,
-            error: null
-        });
+        callback(errorCallback(404, 'Файл не найден', null));
         return;
     }
 
     fs.stat(filePath, (err, stats) => {
         if(err || !stats.isFile()){
-            callback({
-                message: 'Файл не найден',
-                code: 404,
-                error: err
-            });
+            callback(errorCallback(404, 'Файл не найден', err));
             return;
         }
 
         sendFile(filePath, callback);
+
+        fs.readFile(filePath, (err, data) => {
+            if(err) {
+                callback(errorCallback(404, 'Файл не найден', err));
+                return;
+            };
+            callback(null, successCallback(data, mime.getType(filePath), path.parse(filePath).base));
+        });
     });
 }
 
-const sendFile = (filePath, callback) => {
-    fs.readFile(filePath, (err, data) => {
-        if(err) {
-            callback({
-                message: 'Файл не найден',
-                code: 404,
-                error: err
-            });
-            return;
-        };
-        callback(null, {
-            content: data,
-            contentType: mime.getType(filePath)
-        });
-    });
+const errorCallback = (code, message, error) => {
+    return {
+        message: message,
+        code: code,
+        error: error
+    }
+}
+
+const successCallback = (content, contentType, fileName) => {
+    return {
+        content: content,
+        contentType: contentType,
+        fileNmae: fileNmae
+    };
 }

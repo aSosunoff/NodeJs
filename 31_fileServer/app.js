@@ -20,6 +20,7 @@ http.createServer((req, res) => {
             return;
         }
         res.setHeader('Content-Type', `${data.contentType}; charset=utf-8`);
+        // res.setHeader('Content-Disposition', `attachment; filename="${data.fileNmae}"`);
         res.end(data.content);
     });
 }).listen(3000, () => {
