@@ -39,10 +39,11 @@
             "name": "Launch 35",
 			"type": "node",
 			"request": "launch",
-			"args": ["${workspaceRoot}35_Node_API_Mongoose_MVC_Handlebarse_TypeScript/src/service.ts"],
-			"runtimeArgs": ["-r", "${workspaceRoot}35_Node_API_Mongoose_MVC_Handlebarse_TypeScript/node_modules/.bin/ts-node/register"],
+			"args": ["${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\src\\app.ts"],
+			"runtimeArgs": ["-r", "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\node_modules\\.bin\\ts-node\\register"],
 			"cwd": "${workspaceRoot}",
-			"protocol": "inspector",
+            "protocol": "inspector",
+            "sourceMaps": true,
 			"internalConsoleOptions": "openOnSessionStart",
 			"env": {
 				"TS_NODE_IGNORE": "false"
