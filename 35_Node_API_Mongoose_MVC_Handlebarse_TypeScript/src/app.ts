@@ -16,7 +16,7 @@ interface HelperSection{
 }
 
 const exphbs = expressHbs.create({
-    layoutsDir: "app/views/layouts", 
+    layoutsDir: "src/views/layouts", 
     defaultLayout: "master",
     extname: "hbs",
     helpers: {

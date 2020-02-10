@@ -4,9 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start_server_js": "node app/app.js",
-    "compile_to_js": "./node_modules/.bin/tsc",
-    "start_server_ts": "./node_modules/.bin/ts-node src/app.ts"
+    "compile": "./node_modules/.bin/tsc",
+    "start_server": "./node_modules/.bin/ts-node src/app.ts"
   },
   "keywords": [],
   "author": "",

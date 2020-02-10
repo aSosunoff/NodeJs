@@ -38,16 +38,22 @@
         {
             "name": "Launch 35",
 			"type": "node",
-			"request": "launch",
-			"args": ["${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\src\\app.ts"],
-			"runtimeArgs": ["-r", "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\node_modules\\.bin\\ts-node\\register"],
-			"cwd": "${workspaceRoot}",
+            "request": "launch",
+			"args": [
+                "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\src\\app.ts"
+            ],
+			"runtimeArgs": [
+                "-r", 
+                "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\node_modules\\ts-node\\register"
+            ],
+			"cwd": "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript",
             "protocol": "inspector",
-            "sourceMaps": true,
 			"internalConsoleOptions": "openOnSessionStart",
 			"env": {
-				"TS_NODE_IGNORE": "false"
-            }
+                "TS_NODE_PROJECT": "${workspaceRoot}\\35_Node_API_Mongoose_MVC_Handlebarse_TypeScript\\tsconfig.json"
+                // https://github.com/TypeStrong/ts-node#cli-and-programmatic-options
+            },
+
         }
     ]
 }
