@@ -1,0 +1,16 @@
+{
+  "name": "37_optimist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start_server": "node app --port=3005",
+    "start_server_2": "SET MY_PORT=3005 && node app"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "optimist": "^0.6.1"
+  }
+}
