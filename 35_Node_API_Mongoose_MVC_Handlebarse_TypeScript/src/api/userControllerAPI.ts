@@ -89,7 +89,7 @@ export default {
                 name: req.body.name
             },
             {new: true},
-            (err, doc, resss) => {
+            (err, doc) => {
                 if(err) {
                     console.log(err);
                     return res.status(400).send('Ошибка обновления пользователя');
